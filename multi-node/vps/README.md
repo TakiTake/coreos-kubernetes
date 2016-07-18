@@ -13,29 +13,31 @@ Start CoreOS server with Public and Private IP.
 
 ```sh
 $ git clone https://github.com/TakiTake/coreos-kubernetes
-$ cd coreos-kubernetes/multi-node/static
+$ cd coreos-kubernetes/multi-node/vps
 ```
 
-## Cluster Info
+## Set Cluster Info
 
 The supported way to provide Cluster Info to install script is by exporting the following environment variables:
 
 ### Mandatry
 
 ```sh
-export ETCD_HOST_IPS=
-export ETCD_CLUSTER_IPS=
-export CONTROLLER_HOST_IPS=
-export CONTROLLER_CLUSTER_IPS=
-export WORKER_HOST_IPS=
-export WORKER_CLUSTER_IPS=
+ETCD_PUBLIC_IPS
+ETCD_PRIVATE_IPS
+CONTROLLER_PUBLIC_IPS
+CONTROLLER_PRIVATE_IPS
+WORKER_PUBLIC_IPS
+WORKER_PRIVATE_IPS
 ```
 
 ### Optional
 
+Default username is ``core`` and use ``~/.ssh/id_rsa`` as a identity file:
+
 ```sh
-export SSH_USER=core
-export SSH_IDENTITY_FILE=~/.ssh/id_rsa
+SSH_USER=core
+SSH_IDENTITY_FILE=~/.ssh/id_rsa
 ```
 
 # Execute install.sh

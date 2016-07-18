@@ -1,2 +1,4 @@
+.srl
 /release
-/multi-node/vps/etc/environment
+/multi-node/vps/etc
+/multi-node/vps/ssl
