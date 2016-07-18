@@ -9,7 +9,7 @@ It can be useful to install Kubernetes to existing CoreOS servers.
 
 Start CoreOS server with Public and Private IP.
 
-## Clone the Repository
+# Clone the Repository
 
 ```sh
 $ git clone https://github.com/TakiTake/coreos-kubernetes
@@ -34,7 +34,12 @@ export WORKER_CLUSTER_IPS=
 ### Optional
 
 ```sh
-export CLOUD_CONFIG_PATH=/usr/share/oem/cloud-config.yml
 export SSH_USER=core
 export SSH_IDENTITY_FILE=~/.ssh/id_rsa
+```
+
+# Execute install.sh
+
+```sh
+$ install.sh
 ```
