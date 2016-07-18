@@ -1,7 +1,7 @@
 require 'yaml'
 
 def initial_cluster(ips)
-	ips.split(',').map.with_index { |ip, i| "infra%02d=http://#{ip}:2380" % i }.join(',')
+  ips.split(',').map.with_index { |ip, i| "infra%02d=http://#{ip}:2380" % i }.join(',')
 end
 
 def unit_exist_in?(unit_name, data)
@@ -24,10 +24,10 @@ data['coreos']['etcd2']['initial-advertise-peer-urls'] = 'http://$private_ipv4:2
 data['coreos']['etcd2']['listen-peer-urls'] = 'http://$private_ipv4:2380'
 
 unless unit_exist_in?('etcd2.service', data)
-	data['coreos']['units'] << {
-		'name' => 'etcd2.service',
-		'command' => 'start'
-	}
+  data['coreos']['units'] << {
+    'name' => 'etcd2.service',
+    'command' => 'start'
+  }
 end
 
 IO.write(CLOUD_CONFIG_PATH, "#cloud-config\n#{data.to_yaml}")
