@@ -1,4 +1,4 @@
-#!/bin/bash -exu
+#!/bin/bash -e
 
 SCRIPT_DIR=$(dirname $0)
 ETC_DIR="${SCRIPT_DIR}/etc"
@@ -69,9 +69,19 @@ function configController {
 }
 
 function configWorker {
-  for worker_public_ip in $(echo $WORKER_PUBLIC_IPS | sed 's/,/ /g'); do
-    #  scp -i $SSH_IDENTITY_FILE -r ./worker "${SSH_USER}@${worker_public_ip}:/tmp"
-    echo todo
+  local workerPublicIPs=(${WORKER_PUBLIC_IPS//,/ })
+  local workerPrivateIPs=(${WORKER_PRIVATE_IPS//,/ })
+  local cn
+
+  for i in "${!workerPublicIPs[@]}"; do
+    cn="kube-worker-${workerPrivateIPs[$i]}"
+    generateMachineSSL 'worker' $cn ${workerPrivateIPs[$i]}
+
+    scp -i $SSH_IDENTITY_FILE -r $ETC_DIR                    "${SSH_USER}@${workerPublicIPs[$i]}:/tmp"
+    scp -i $SSH_IDENTITY_FILE -r $WORKER_DIR                 "${SSH_USER}@${workerPublicIPs[$i]}:/tmp"
+    scp -i $SSH_IDENTITY_FILE    ${WORKER_CLOUD_CONFIG_PATH} "${SSH_USER}@${workerPublicIPs[$i]}:/tmp/worker/install.sh"
+    scp -i $SSH_IDENTITY_FILE    "${SSL_DIR}/${cn}.tar"      "${SSH_USER}@${workerPublicIPs[$i]}:/tmp/ssl.tar"
+    ssh -i $SSH_IDENTITY_FILE -l $SSH_USER "${workerPublicIPs[$i]}" /bin/bash /tmp/worker/config.sh
   done
 }
 
