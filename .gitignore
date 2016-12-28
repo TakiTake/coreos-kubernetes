@@ -1,4 +1,6 @@
 .srl
+.envrc
+terraform.tfstate*
 /release
 /multi-node/vps/etc
 /multi-node/vps/ssl

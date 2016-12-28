@@ -57,12 +57,12 @@ function configController {
   local cn
 
   for i in "${!controllerPublicIPs[@]}"; do
-    cn="kube-apiserver-${controllerPrivateIPs[$i]}"
-    generateMachineSSL 'apiserver' $cn $CONTROLLER_PRIVATE_IPS
+    cn="kube-apiserver-${controllerPublicIPs[$i]}"
+    generateMachineSSL 'apiserver' $cn "${CONTROLLER_PUBLIC_IPS},${K8S_SERVICE_IP}"
 
     scp -i $SSH_IDENTITY_FILE -r $ETC_DIR                        "${SSH_USER}@${controllerPublicIPs[$i]}:/tmp"
     scp -i $SSH_IDENTITY_FILE -r $CONTROLLER_DIR                 "${SSH_USER}@${controllerPublicIPs[$i]}:/tmp"
-    scp -i $SSH_IDENTITY_FILE    ${CONTROLLER_CLOUD_CONFIG_PATH} "${SSH_USER}@${controllerPublicIPs[$i]}:/tmp/controller/install.sh"
+    scp -i $SSH_IDENTITY_FILE    $CONTROLLER_CLOUD_CONFIG_PATH   "${SSH_USER}@${controllerPublicIPs[$i]}:/tmp/controller/install.sh"
     scp -i $SSH_IDENTITY_FILE    "${SSL_DIR}/${cn}.tar"          "${SSH_USER}@${controllerPublicIPs[$i]}:/tmp/ssl.tar"
     ssh -i $SSH_IDENTITY_FILE -l $SSH_USER "${controllerPublicIPs[$i]}" /bin/bash /tmp/controller/config.sh
   done
@@ -74,12 +74,12 @@ function configWorker {
   local cn
 
   for i in "${!workerPublicIPs[@]}"; do
-    cn="kube-worker-${workerPrivateIPs[$i]}"
-    generateMachineSSL 'worker' $cn ${workerPrivateIPs[$i]}
+    cn="kube-worker-${workerPublicIPs[$i]}"
+    generateMachineSSL 'worker' $cn ${workerPublicIPs[$i]}
 
     scp -i $SSH_IDENTITY_FILE -r $ETC_DIR                    "${SSH_USER}@${workerPublicIPs[$i]}:/tmp"
     scp -i $SSH_IDENTITY_FILE -r $WORKER_DIR                 "${SSH_USER}@${workerPublicIPs[$i]}:/tmp"
-    scp -i $SSH_IDENTITY_FILE    ${WORKER_CLOUD_CONFIG_PATH} "${SSH_USER}@${workerPublicIPs[$i]}:/tmp/worker/install.sh"
+    scp -i $SSH_IDENTITY_FILE    $WORKER_CLOUD_CONFIG_PATH   "${SSH_USER}@${workerPublicIPs[$i]}:/tmp/worker/install.sh"
     scp -i $SSH_IDENTITY_FILE    "${SSL_DIR}/${cn}.tar"      "${SSH_USER}@${workerPublicIPs[$i]}:/tmp/ssl.tar"
     ssh -i $SSH_IDENTITY_FILE -l $SSH_USER "${workerPublicIPs[$i]}" /bin/bash /tmp/worker/config.sh
   done
